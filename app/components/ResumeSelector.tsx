@@ -1,12 +1,14 @@
 import { useState } from 'react';
 
-interface Template {
-    title: string;
-    content: string;
-    previewImage:string;
-    id:number;
-    name:string;
-}
+type Template = {
+  id: number;
+  name: string;
+  previewImage: string;
+  title: string;
+  content: string;
+  [key: string]: string | number;  // Allow both string and number values
+};
+
 
 interface ResumeSelectorProps {
   templates: Template[];
@@ -22,12 +24,12 @@ const ResumeSelector: React.FC<ResumeSelectorProps> = ({ templates, onSelectTemp
   };
 
   return (
-    <div className="p-4 border border-gray-300 rounded-md shadow-sm">
+    <div className="p-4 border border-gray-300 rounded-md shadow-sm w-full max-w-xs">
       <h2 className="text-xl font-semibold mb-4">Choose from our resume templates</h2>
-      <div className="grid grid-cols-2 gap-4">
-        {templates.map((template, index) => (
+      <div className="flex flex-col gap-4">
+        {templates.map((template) => (
           <div
-            key={index}
+            key={template.id}
             className={`p-4 border-2 rounded-md cursor-pointer ${
               selectedTemplate?.id === template.id ? 'border-purple-600' : 'border-gray-300'
             }`}

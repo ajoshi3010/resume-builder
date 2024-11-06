@@ -8,18 +8,22 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  name        String
-  preferences UserPreferences[]
+  id           Int             @id @default(autoincrement())
+  email        String          @unique
+  name         String
+  preferences  UserPreferences[]
+  achievements Achievement[]
+  skills       Skill[]
+  education    Education[]
+  experience   Experience[]
 }
 
 model ResumeTemplate {
-  id             Int              @id @default(autoincrement())
-  name           String
-  layoutData     Json
-  previewImage   String           // Add this field to store the preview image URL/path
-  userPreferences UserPreferences[] // Add this field to complete the relationship
+  id              Int              @id @default(autoincrement())
+  name            String
+  layoutData      String           // Change Json to String to store LaTeX layout
+  previewImage    String           // Add this field to store the preview image URL/path
+  userPreferences UserPreferences[]
 }
 
 model UserPreferences {
@@ -29,4 +33,42 @@ model UserPreferences {
   selectedSections Json
   ResumeTemplate  ResumeTemplate @relation(fields: [templateId], references: [id])
   User            User           @relation(fields: [userId], references: [id])
+}
+
+model Achievement {
+  id        Int    @id @default(autoincrement())
+  title     String
+  description String
+  date      DateTime
+  userId    Int
+  User      User   @relation(fields: [userId], references: [id])
+}
+
+model Skill {
+  id        Int    @id @default(autoincrement())
+  name      String
+  level     String // You can add 'beginner', 'intermediate', 'expert', etc.
+  userId    Int
+  User      User   @relation(fields: [userId], references: [id])
+}
+
+model Education {
+  id          Int      @id @default(autoincrement())
+  degree      String
+  institution String
+  startDate   DateTime
+  endDate     DateTime
+  userId      Int
+  User        User     @relation(fields: [userId], references: [id])
+}
+
+model Experience {
+  id          Int      @id @default(autoincrement())
+  title       String
+  company     String
+  startDate   DateTime
+  endDate     DateTime
+  description String
+  userId      Int
+  User        User     @relation(fields: [userId], references: [id])
 }
