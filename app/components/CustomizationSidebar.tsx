@@ -2,7 +2,12 @@ import { useState } from 'react';
 
 const sections = ['Skills', 'Education', 'Experience', 'Achievements'];
 
-const CustomizationSidebar = ({ onSectionToggle }) => {
+// Define the type for the component's props
+interface CustomizationSidebarProps {
+  onSectionToggle: (sections: string[]) => void;
+}
+
+const CustomizationSidebar: React.FC<CustomizationSidebarProps> = ({ onSectionToggle }) => {
   const [selectedSections, setSelectedSections] = useState<string[]>([]);
 
   const handleToggle = (section: string) => {
@@ -10,7 +15,7 @@ const CustomizationSidebar = ({ onSectionToggle }) => {
       ? selectedSections.filter((sec) => sec !== section)
       : [...selectedSections, section];
     setSelectedSections(updatedSections);
-    onSectionToggle(updatedSections);
+    onSectionToggle(updatedSections); // Pass updated sections to the parent
   };
 
   return (

@@ -1,9 +1,22 @@
 import { useState } from 'react';
 
-const ResumeSelector = ({ templates, onSelectTemplate }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+interface Template {
+    title: string;
+    content: string;
+    previewImage:string;
+    id:number;
+    name:string;
+}
 
-  const handleTemplateSelect = (template) => {
+interface ResumeSelectorProps {
+  templates: Template[];
+  onSelectTemplate: (template: Template) => void;
+}
+
+const ResumeSelector: React.FC<ResumeSelectorProps> = ({ templates, onSelectTemplate }) => {
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+
+  const handleTemplateSelect = (template: Template) => {
     setSelectedTemplate(template);
     onSelectTemplate(template);
   };
@@ -16,7 +29,7 @@ const ResumeSelector = ({ templates, onSelectTemplate }) => {
           <div
             key={index}
             className={`p-4 border-2 rounded-md cursor-pointer ${
-              selectedTemplate === template.id ? 'border-purple-600' : 'border-gray-300'
+              selectedTemplate?.id === template.id ? 'border-purple-600' : 'border-gray-300'
             }`}
             onClick={() => handleTemplateSelect(template)}
           >

@@ -1,10 +1,14 @@
-const DownloadButton = ({ onDownload }) => {
+interface DownloadButtonProps {
+    onDownload: () => void;
+  }
+  
+  const DownloadButton: React.FC<DownloadButtonProps> = ({ onDownload }) => {
     return (
       <button
         onClick={onDownload}
-        className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md mt-4"
+        className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition"
       >
-        Download Resume
+        Download PDF
       </button>
     );
   };
