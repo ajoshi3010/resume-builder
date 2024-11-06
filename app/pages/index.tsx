@@ -1,3 +1,4 @@
+"use client"
 import { useState } from 'react';
 import ResumeSelector from '../components/ResumeSelector';
 import CustomizationSidebar from '../components/CustomizationSidebar';
