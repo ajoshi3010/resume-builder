@@ -1,42 +1,43 @@
 import { useState } from 'react';
 
-type Template = {
+interface Template {
   id: number;
   name: string;
-  previewImage: string;
-  title: string;
-  content: string;
-  [key: string]: string | number;  // Allow both string and number values
-};
-
+  imgLink: string;
+}
 
 interface ResumeSelectorProps {
   templates: Template[];
-  onSelectTemplate: (template: Template) => void;
+  onSelectTemplate: (template: number) => void;
 }
 
 const ResumeSelector: React.FC<ResumeSelectorProps> = ({ templates, onSelectTemplate }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<number | null>(null);
 
-  const handleTemplateSelect = (template: Template) => {
-    setSelectedTemplate(template);
-    onSelectTemplate(template);
+  const handleTemplateSelect = (templateId: number) => {
+    setSelectedTemplate(templateId);
+    onSelectTemplate(templateId);
   };
 
   return (
     <div className="p-4 border border-gray-300 rounded-md shadow-sm w-full max-w-xs">
-      <h2 className="text-xl font-semibold mb-4">Choose from our resume templates</h2>
       <div className="flex flex-col gap-4">
         {templates.map((template) => (
           <div
             key={template.id}
             className={`p-4 border-2 rounded-md cursor-pointer ${
-              selectedTemplate?.id === template.id ? 'border-purple-600' : 'border-gray-300'
+              selectedTemplate === template.id ? 'border-purple-600' : 'border-gray-300'
             }`}
-            onClick={() => handleTemplateSelect(template)}
+            onClick={() => handleTemplateSelect(template.id)}
           >
-            <img src={template.previewImage} alt="Template preview" className="w-full mb-2" />
-            <button className="w-full text-purple-600 font-medium">{template.name}</button>
+            <div className="relative w-full" style={{ paddingTop: '141.42%' /* (11.69 / 8.27) * 100 */ }}>
+              <img
+                src={template.imgLink}
+                alt={template.name}
+                className="absolute top-0 left-0 w-full h-full object-cover rounded-md"
+              />
+            </div>
+            <p className="text-center">{template.name}</p>
           </div>
         ))}
       </div>

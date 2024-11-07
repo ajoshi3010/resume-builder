@@ -3,80 +3,74 @@ import { useState } from 'react';
 import ResumeSelector from '../components/ResumeSelector';
 import CustomizationSidebar from '../components/CustomizationSidebar';
 import LivePreview from '../components/LivePreview';
-import DownloadButton from '../components/DownloadButton';
 
-type Template = {
-    id: number;
-    name: string;
-    previewImage: string;
-    title: string;
-    content: string;
-    [key: string]: string | number;  // Allow both string and number values
+const Home = () => {
+  const [selectedTemplate, setSelectedTemplate] = useState<number>(0);
+  const [selectedItems, setSelectedItems] = useState<{ [section: string]: string[] }>({
+    skills: [],
+    education: [],
+    experience: [],
+    achievements: [],
+  });
+
+  // Static data for user details
+  const userData = {
+    skills: [
+      { name: "JavaScript", level: "Advanced" },
+      { name: "React", level: "Intermediate" },
+      { name: "Node.js", level: "Advanced" },
+      { name: "TypeScript", level: "Beginner" }
+    ],
+    education: [
+      { degree: "Bachelor's Degree in Computer Science", institution: "University XYZ", startDate: "2018-08-01", endDate: "2022-06-01" },
+      { degree: "Master's Degree in Software Engineering", institution: "University ABC", startDate: "2022-08-01", endDate: "2024-06-01" }
+    ],
+    experience: [
+      { title: "Software Developer", company: "Tech Corp", startDate: "2022-07-01", endDate: "2023-12-31", description: "Developed front-end components using React." },
+      { title: "Project Manager", company: "Innovate Ltd.", startDate: "2024-01-01", endDate: "Present", description: "Managed multiple software development projects." }
+    ],
+    achievements: [
+      { title: "Hackathon Winner", description: "Won first place in XYZ Hackathon.", date: "2023-05-15" },
+      { title: "Employee of the Year", description: "Awarded Employee of the Year for outstanding performance.", date: "2023-12-20" }
+    ]
   };
-  
-  
-  
 
-  const Home = () => {
-    const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
-    const [selectedSections, setSelectedSections] = useState<string[]>([]);
-  
-    const templates: Template[] = [
-      {
-        id: 1,
-        name: 'Template A',
-        previewImage: 'https://png.pngtree.com/png-vector/20221217/ourmid/pngtree-example-sample-grungy-stamp-vector-png-image_15560590.png',
-        title: 'Resume Template A',
-        content: 'General content for template A',
-        education: 'Bachelor of Science in Computer Science',  // Example section
-        experience: '2 years of experience as a software developer',  // Example section
-      },
-      {
-        id: 2,
-        name: 'Template B',
-        previewImage: 'https://png.pngtree.com/png-vector/20221217/ourmid/pngtree-example-sample-grungy-stamp-vector-png-image_15560590.png',
-        title: 'Resume Template B',
-        content: 'General content for template B',
-        education: 'Master of Science in Computer Science',
-        experience: '3 years of experience as a senior developer',
-      },
-    ];
-  
-    const handleTemplateSelect = (template: Template) => setSelectedTemplate(template);
-    const handleSectionToggle = (sections: string[]) => setSelectedSections(sections);
-  
-    const handleDownload = async () => {
-      if (!selectedTemplate) return;
-  
-      const response = await fetch('/api/generate-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ templateId: selectedTemplate.id, sections: selectedSections }),
-      });
-  
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'resume.pdf';
-        a.click();
-      } else {
-        console.error('Failed to download resume.');
-      }
-    };
-  
-    return (
-      <div className="flex gap-8 p-8">
-        <CustomizationSidebar onSectionToggle={handleSectionToggle} />
-        <div className="flex flex-col items-start gap-4 w-full max-w-5xl">
-          <ResumeSelector templates={templates} onSelectTemplate={handleTemplateSelect} />
-          <LivePreview template={selectedTemplate || { title: '', content: '' }} selectedSections={selectedSections} />
-          <DownloadButton onDownload={handleDownload} />
-        </div>
+  // Updated templates array with name, id, and img link
+  const templates = [
+    { id: 1, name: "Template One", imgLink: "https://via.placeholder.com/150" },
+    { id: 2, name: "Template Two", imgLink: "https://via.placeholder.com/150" }
+  ];
+
+  const handleTemplateSelect = (template: number) => setSelectedTemplate(template);
+
+  const handleToggleItem = (section: string, item: string) => {
+    // Update selected items for the respective section
+    const updatedSelectedItems = { ...selectedItems };
+    if (updatedSelectedItems[section].includes(item)) {
+      updatedSelectedItems[section] = updatedSelectedItems[section].filter((i) => i !== item);
+    } else {
+      updatedSelectedItems[section].push(item);
+    }
+    setSelectedItems(updatedSelectedItems); // Update the state in the parent
+  };
+  return (
+    <div className="flex gap-4 p-8">
+      {/* Resume Selector on the left with 20% width */}
+      <div className="w-1/5">
+        <ResumeSelector templates={templates} onSelectTemplate={handleTemplateSelect} />
       </div>
-    );
-  };
-  
+
+      {/* Live Preview in the center with 60% width */}
+      <div className="w-3/5 overflow-hidden">
+        <LivePreview template={selectedTemplate} selectedSections={selectedItems} userData={userData} />
+      </div>
+
+      {/* Customization Sidebar on the right with 20% width */}
+      <div className="w-1/5 overflow-auto">
+        <CustomizationSidebar userData={userData} selectedItems={selectedItems} onSectionToggle={handleToggleItem} />
+      </div>
+    </div>
+  );
+};
 
 export default Home;
